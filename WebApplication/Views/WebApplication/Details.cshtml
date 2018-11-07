@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div class="container">
+    <span>Adı: </span>@Html.TextBox("name")<br />
+    <span>Soyadı: </span>@Html.TextBox("surname")<br />
+    <button class="btn btn-default" onclick="Login();">Login</button>
+    <button class="btn btn-default" onclick="Create1();">Create1</button>
+    @Html.ActionLink("Create e git", "Create");
+
+</div>
+
+<script>
+    function Create1() {
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:61886/api/ManagerWebApi",
+            dataType: "jsonp",
+            headers: { Authorization: "Basic " + sessionStorage.getItem('MyToken') },
+            success: function (result) {
+                if (result) {
+                    alert("olduuu");
+                    $.each(result, function (index, value) {
+                        var html = "";
+                        html += "<tr class='data'>";
+                        html += "<td>" + value.MusteriAdi + "</td>";
+                        html += "</tr>";
+                        $("table").append(html);
+                    });
+                }
+            },
+            error: function (err) {
+                alert("hatali");
+            }
+        });
+    }
+    function Login() {
+        var name = $("#name").val()
+        var surname = $("#surname").val();
+
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:61886/api/Login?name=" + name + "&surname=" + surname,
+            dataType: "json",
+            //beforeSend: function (xhr) {
+            //    xhr.setRequestHeader("Authorization", "Basic " + btoa(name + ":" + surname));
+            //},
+            //headers: { 'Authorization': 'Basic' + btoa(name + ":" + surname) },
+            success: function (result) {
+                alert("ok");
+                sessionStorage.setItem("MyToken", result.Message);
+                @*var url = '@Url.Action("Create", "WebApplication")';
+                window.location.href = url;*@
+            },
+            error: function (err) {
+                alert(err.responseText);
+            }
+        });
+    }
+</script>

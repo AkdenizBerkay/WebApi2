@@ -1,0 +1,93 @@
+﻿@using GridMvc.Html
+@*@using MVCGrid.Web*@
+@model List<Entities.Musteriler>
+
+<link href="~/Content/Gridmvc.css" rel="stylesheet" />
+<link href="~/Content/gridmvc.datepicker.min.css" rel="stylesheet" />
+<style>
+    select.form-control:not([size]):not([multiple]) {
+        height: calc(3.25rem + 2px);
+    }
+</style>
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/gridmvc.min.js"></script>
+<script src="~/Scripts/bootstrap-datepicker.js"></script>
+<script src="~/Scripts/gridmvc.customwidgets.js"></script>
+
+<div class="container">
+    <h2>MvcGrid</h2>
+
+    @Html.Grid(Model).Named("NotlarGrid").Columns(col =>
+{
+
+    col.Add(k => k.MusteriAdi).Titled("Müşteri");
+    col.Add(k => k.MusteriUnvani).Titled("Ünvan");
+    col.Add(k => k.SirketAdi).Titled("Şirket");
+    col.Add(k => k.Ulke).Titled("Ülke");
+    col.Add(k => k.Sehir).Titled("Şehir");
+
+    col.Add(k=>k.MusteriID).Titled(" ").Sortable(false).Filterable(false).Encoded(false).Sanitized(false).RenderValueAs(html=>
+        Html.ActionLink("Düzenle", "AddorEdit", "Development", new { html.MusteriID, adminpanel = true }, new { id = "Duzenle" + html.MusteriID, @class = "glyphicon glyphicon-edit btn btn-success"})).SetWidth(30);
+
+
+}).Sortable(true).WithPaging(5)
+</div>
+
+<div class="container">
+    <span>MusteriAdi: </span><span id="MusteriAdi"></span><br />
+    <span>MusteriUnvani: </span><span id="MusteriUnvani"></span><br />
+    <span>SirketAdi: </span><span id="SirketAdi"></span><br />
+    <span>Ulke: </span><span id="Ulke"></span><br />
+    <span>Sehir: </span><span id="Sehir"></span><br />
+</div>
+
+<hr />
+
+<div class="container">
+    <span>Adı: </span>@Html.TextBox("name")<br />
+    <span>Soyadı: </span>@Html.TextBox("surname")<br />
+    <button class="btn btn-default" onclick="Login();">Login</button>
+</div>
+
+<script>
+    $(function () {
+        pageGrids.NotlarGrid.onRowSelect(function (e) {
+            var data = e.row;
+            var x = data[2];
+            $("#MusteriAdi").text(data.MusteriAdi);
+            $("#MusteriUnvani").text(data.MusteriUnvani);
+            $("#SirketAdi").text(data.SirketAdi);
+            $("#Ulke").text(data.Ulke);
+            $("#Sehir").text(data.Sehir);
+        });
+
+        pageGrids.NotlarGrid.addFilterWidget(new CustomersFilterWidget());
+    });
+
+    function Login()
+    {
+        var name = $("#name").val()
+        var surname = $("#surname").val();
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:61886/api/Login?name=" + name + "&surname=" + surname,
+            dataType: "json",
+            headers: { Authorization: "Basic" + btoa(name + ":" + surname) },
+            success: function (result) {
+                sessionStorage.setItem("MyToken", result);
+                alert("Giriş Onaylandı");
+            },
+            error: function (err) {
+                alert("Hatalii");
+            }
+        });
+        //$.get("https://localhost:44300/api/Login?name=" + name + "&surname=" + surname, function (result) {
+        //    sessionStorage.setItem("MyToken", result);
+        //    alert("Giriş Onaylandı");
+        //}).fail(function (err) {
+        //    console.log(err);
+        //    alert("Hata");
+        //    });
+    }
+</script>
