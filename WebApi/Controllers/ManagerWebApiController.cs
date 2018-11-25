@@ -10,8 +10,8 @@ using WebApi.Filters;
 
 namespace WebApi.Controllers
 {
-    //[CustomTokenAuthorize]
-    [MyAuthorization]
+    [CustomTokenAuthorize]
+    //[MyAuthorization]
     public class ManagerWebApiController : ApiController
     {
         //Manager<T> man = new Manager<T>();
