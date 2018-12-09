@@ -29,13 +29,22 @@ namespace WebApi.Controllers
                 //u.name = Perso.Adi;
                 //u.surname = Perso.SoyAdi;
                 var jsonstr = Newtonsoft.Json.JsonConvert.SerializeObject(Perso);
-                var token = FTH.Extension.Encrypter.Encrypt(jsonstr, "1");
-                return Request.CreateErrorResponse(HttpStatusCode.OK, token);
+                string token = FTH.Extension.Encrypter.Encrypt(jsonstr, "159357");
+                return Request.CreateResponse(HttpStatusCode.OK, token);
             }
             else
             {
                 return Request.CreateResponse(HttpStatusCode.Unauthorized, "Giriş yapılan bilgilere sahip personel bulunmamaktadır.");
             }
+        }
+
+        [HttpGet]
+        [EnableCors("*","*","*")]
+        public HttpResponseMessage GetList()
+        {
+            Manager<Musteriler> man = new Manager<Musteriler>();
+            var list = man.GetAll().ToList();
+            return Request.CreateResponse(HttpStatusCode.OK, list);
         }
     }
 }

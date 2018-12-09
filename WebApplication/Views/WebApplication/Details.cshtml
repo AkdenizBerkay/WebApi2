@@ -16,49 +16,102 @@
 
 <script>
     function Create1() {
-        $.ajax({
-            type: "GET",
-            url: "http://localhost:61886/api/ManagerWebApi",
-            dataType: "json",
-            headers: { Authorization: "Basic " + sessionStorage.getItem('MyToken') },
-            success: function (result) {
-                if (result) {
-                    alert("olduuu");
-                    $.each(result, function (index, value) {
-                        var html = "";
-                        html += "<tr class='data'>";
-                        html += "<td>" + value.MusteriAdi + "</td>";
-                        html += "</tr>";
-                        $("table").append(html);
-                    });
-                }
-            },
-            error: function (err) {
-                alert("hatali");
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://localhost:61886/api/Login");
+        xhr.setRequestHeader("Authorization", "Basic " + sessionStorage.getItem('MyToken')),
+            xhr.onload = function () {
+            alert("loadda");
+            if (xhr.status == 200) {
+                console.log(xhr.status);
+                console.log(this.status);
+                alert("olduuu");
             }
-        });
+            else {
+                console.log(xhr.statusText);
+                console.log(xhr.status);
+                console.log(xhr.readyState);
+                console.log(xhr.response);
+                console.log(xhr.responseText);
+            }
+            }
+        xhr.onprogress = function () {
+            alert("progressde" + this.status);
+            if (xhr.status == 200) {
+                alert("olduuu");
+            }
+            else {
+                console.log(xhr.statusText);
+                console.log(xhr.status);
+                console.log(xhr.readyState);
+                console.log(xhr.response);
+                console.log(xhr.responseText);
+            }
+        }
+
+        xhr.send();
+        //$.ajax({
+        //    type: "GET",
+        //    url: "http://localhost:61886/api/ManagerWebApi",
+        //    dataType: "json",
+        //    headers: { Authorization: "Basic " + sessionStorage.getItem('MyToken') },
+        //    success: function (result) {
+        //        if (result) {
+        //            alert("olduuu");
+        //            $.each(result, function (index, value) {
+        //                var html = "";
+        //                html += "<tr class='data'>";
+        //                html += "<td>" + value.MusteriAdi + "</td>";
+        //                html += "</tr>";
+        //                $("table").append(html);
+        //            });
+        //        }
+        //    },
+        //    error: function (err) {
+        //        alert("hatali");
+        //    }
+        //});
     }
     function Login() {
         var name = $("#name").val()
         var surname = $("#surname").val();
 
-        $.ajax({
-            type: "GET",
-            url: "http://localhost:61886/api/Login?name=" + name + "&surname=" + surname,
-            dataType: "json",
-            //beforeSend: function (xhr) {
-            //    xhr.setRequestHeader("Authorization", "Basic " + btoa(name + ":" + surname));
-            //},
-            //headers: { 'Authorization': 'Basic' + btoa(name + ":" + surname) },
-            success: function (result) {
-                alert("ok");
-                sessionStorage.setItem("MyToken", result.Message);
-                @*var url = '@Url.Action("Create", "WebApplication")';
-                window.location.href = url;*@
-            },
-            error: function (err) {
-                alert(err.responseText);
+        //$.ajax({
+        //    type: "GET",
+        //    url: "http://localhost:61886/api/Login?name=" + name + "&surname=" + surname,
+        //    dataType: "json",
+        //    success: function (result) {
+        //        alert("ok");
+        //        alert(result);
+        //        console.log(typeof result);
+        //        sessionStorage.setItem("MyToken", result);
+        //    },
+        //    error: function (err) {
+        //        alert(err.responseText);
+        //    }
+        //});
+
+        //$.get("http://localhost:61886/api/Login?name=" + name + "&surname=" + surname, function (result) {
+        //    alert(result.Message);
+        //    sessionStorage.setItem("MyToken", result);
+        //});
+
+        var xhr1 = new XMLHttpRequest();
+        xhr1.open("GET", "http://localhost:61886/api/Login?name=" + name + "&surname=" + surname);
+            xhr1.onload = function (result) {
+                if (xhr1.status == 200) {
+                    alert("olduuu");
+                    sessionStorage.setItem("MyToken", result.target.response);
+                }
+                else {
+                    console.log(xhr1.statusText);
+                    console.log(xhr1.status);
+                    console.log(xhr1.readyState);
+                    console.log(xhr1.response);
+                    console.log(xhr1.responseText);
+                }
             }
-        });
+        xhr1.send();
+
     }
 </script>
